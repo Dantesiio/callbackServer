@@ -1,0 +1,13 @@
+<state>
+  <timestamp value='1708575705708' />
+  <sourceSet name='default'>
+    <source name='/home/gtamura/own/cursos/swarch/resources/ICE/helloworld-ret/Printer.ice'>
+      <file name='/home/gtamura/own/cursos/swarch/resources/ICE/helloworld-ret/server/build/generated-src/Demo/Response.java' />
+      <file name='/home/gtamura/own/cursos/swarch/resources/ICE/helloworld-ret/server/build/generated-src/Demo/Printer.java' />
+      <file name='/home/gtamura/own/cursos/swarch/resources/ICE/helloworld-ret/server/build/generated-src/Demo/PrinterPrx.java' />
+      <file name='/home/gtamura/own/cursos/swarch/resources/ICE/helloworld-ret/server/build/generated-src/Demo/_PrinterPrxI.java' />
+    </source>
+    <arg value='/opt/Ice-3.7.6/bin/slice2java' />
+    <arg value='-I/opt/Ice-3.7.6/slice' />
+  </sourceSet>
+</state>
