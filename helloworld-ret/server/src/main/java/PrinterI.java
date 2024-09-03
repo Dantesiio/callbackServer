@@ -1,4 +1,7 @@
 import Demo.Response;
+import com.zeroc.Ice.Communicator;
+import com.zeroc.Ice.Current;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
@@ -10,42 +13,56 @@ import java.util.concurrent.Executors;
 
 public class PrinterI implements Demo.Printer {
     private final ExecutorService executorService = Executors.newCachedThreadPool();
+    private Communicator communicator;
+
+    private long startTime;
+    private long latencyProcess;
+    private int requestsReceived;
+    private int requestsAnswered;
+
+    private String msg;
+
+    public PrinterI(Communicator communicator) {
+        this.communicator = communicator;
+    }
 
     @Override
-    public Response printString(String message, com.zeroc.Ice.Current current) {
+    public Response printString(String message, Current current) {
+        requestsReceived += 1;
+        this.msg = message;
+
         System.out.println("Mensaje recibido: " + message);
         String[] parts = message.split(":", 3);
         String command = parts.length > 2 ? parts[2] : "";
 
-        long startTime = System.nanoTime(); // Inicia la medición de tiempo
+        startTime = System.currentTimeMillis(); // Inicia la medición de tiempo
 
+        String response;
         if (command.matches("\\d+")) {
             int n = Integer.parseInt(command);
-            String response = "Fibonacci series: " + fibonacci(n) + ", Prime factors: " + primeFactors(n);
-            long endTime = System.nanoTime(); // Termina la medición de tiempo
-            System.out.println("Tiempo para calcular Fibonacci y factores primos: " + (endTime - startTime) + " nanosegundos");
-            return new Response(System.currentTimeMillis(), response);
+            response = "Fibonacci series: " + fibonacci(n) + ", Prime factors: " + primeFactors(n);
         } else if (command.startsWith("listifs")) {
-            String response = listInterfaces();
-            long endTime = System.nanoTime(); // Termina la medición de tiempo
-            System.out.println("Tiempo para listar interfaces: " + (endTime - startTime) + " nanosegundos");
-            return new Response(System.currentTimeMillis(), response);
+            response = listInterfaces();
         } else if (command.startsWith("listports")) {
             String ipAddress = command.split(" ")[1];
+            response = "Listing ports in progress for IP: " + ipAddress;
             listPorts(ipAddress);
-            long endTime = System.nanoTime(); // Termina la medición de tiempo
-            System.out.println("Tiempo para iniciar listado de puertos: " + (endTime - startTime) + " nanosegundos");
-            return new Response(System.currentTimeMillis(), "Listing ports in progress for IP: " + ipAddress);
         } else if (command.startsWith("!")) {
-            String response = executeCommand(command.substring(1));
-            long endTime = System.nanoTime(); // Termina la medición de tiempo
-            System.out.println("Tiempo para ejecutar el comando: " + (endTime - startTime) + " nanosegundos");
-            return new Response(System.currentTimeMillis(), response);
+            response = executeCommand(command.substring(1));
+        } else if (command.equalsIgnoreCase("exit")) {
+            communicator.shutdown();
+            response = "Server shutting down...";
         } else {
-            long endTime = System.nanoTime(); // Termina la medición de tiempo
-            System.out.println("Tiempo para procesar comando desconocido: " + (endTime - startTime) + " nanosegundos");
-            return new Response(System.currentTimeMillis(), "Unknown command.");
+            response = "Unknown command.";
         }
+
+        updatePerformanceMetrics();
+        return new Response(System.currentTimeMillis(), response + getPerformance());
+    }
+
+    private void updatePerformanceMetrics() {
+        latencyProcess = System.currentTimeMillis() - startTime;
+        requestsAnswered += 1;
     }
 
     private String fibonacci(int n) {
@@ -79,15 +96,13 @@ public class PrinterI implements Demo.Printer {
                 result.append(address.toString()).append("\n");
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            result.append("Error al listar interfaces: ").append(e.getMessage()).append("\n");
         }
         return result.toString();
     }
 
     private void listPorts(String ipAddress) {
-        System.out.println("Entro");
         executorService.submit(() -> {
-            long startTime = System.nanoTime(); // Inicia la medición de tiempo
             StringBuilder result = new StringBuilder();
             try {
                 for (int port = 9000; port <= 10000; port++) {
@@ -97,8 +112,6 @@ public class PrinterI implements Demo.Printer {
                         // Port is closed or filtered, ignore
                     }
                 }
-                long endTime = System.nanoTime(); // Termina la medición de tiempo
-                System.out.println("Tiempo para listar puertos: " + (endTime - startTime) + " nanosegundos");
                 System.out.println("Listing ports complete for IP: " + ipAddress + "\n" + result);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -117,8 +130,61 @@ public class PrinterI implements Demo.Printer {
             }
             br.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            output.append("Error al ejecutar el comando: ").append(e.getMessage()).append("\n");
         }
         return output.toString();
+    }
+
+    private String getPerformance() {
+        return getRequestsReceived() + getRequestsAnswered() + getLatencyProcess() + getThroughput();
+    }
+
+    private String getRequestsReceived() {
+        return "\nRequests received (server): " + requestsReceived;
+    }
+
+    private String getRequestsAnswered() {
+        return "\nUnprocessed rate: " + (requestsReceived - requestsAnswered);
+    }
+
+    private String getLatencyProcess() {
+        return "\nLatency (process): " + latencyProcess + "ms";
+    }
+
+    private String getThroughput() {
+        long start = System.currentTimeMillis();
+        int executedCommands = 0;
+
+        while (true) {
+            String r = simulateCommandProcessing(msg);
+            if (System.currentTimeMillis() - start >= 1000) {
+                break;
+            }
+            executedCommands++;
+        }
+
+        return "\nThroughput (of this command): " + executedCommands;
+    }
+
+    private String simulateCommandProcessing(String msg) {
+        String[] msgParts = msg.split(" ");
+
+        if (msgParts.length == 1) {
+            return "Ups! Type a valid message";
+        }
+
+        String realMsg = msgParts[1];
+
+        try {
+            Long num = Long.parseLong(realMsg);
+
+            if (num <= 0) {
+                return "Ups! Type a valid number";
+            }
+
+            return primeFactors(num.intValue());
+        } catch (NumberFormatException e) {
+            return "Ups! Type a valid message";
+        }
     }
 }

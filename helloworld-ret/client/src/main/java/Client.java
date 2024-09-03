@@ -1,4 +1,4 @@
-import Demo.*;
+import Demo.Response;
 import java.util.Scanner;
 
 public class Client {
@@ -28,7 +28,8 @@ public class Client {
                 String prefixedMessage = username + ":" + hostname + ":" + message;
                 Response response = service.printString(prefixedMessage);
 
-                System.out.println("Respuesta del servidor: " + response.value + ", " + response.responseTime);
+                // Mostrar la respuesta del servidor con detalles adicionales
+                System.out.println("Respuesta del servidor: " + response.value + ", Response Time: " + response.responseTime);
             }
         } catch (Exception e) {
             e.printStackTrace();

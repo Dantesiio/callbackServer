@@ -12,10 +12,20 @@ public class Server {
                     System.out.println(v);
                 }
             }
+
+            // Creación del adaptador para manejar las solicitudes
             com.zeroc.Ice.ObjectAdapter adapter = communicator.createObjectAdapter("Printer");
-            com.zeroc.Ice.Object object = new PrinterI();
+
+            // Creación del objeto PrinterI con el Communicator
+            com.zeroc.Ice.Object object = new PrinterI(communicator);
+
+            // Añadir el objeto al adaptador con un nombre de identidad
             adapter.add(object, com.zeroc.Ice.Util.stringToIdentity("SimplePrinter"));
+
+            // Activación del adaptador para aceptar solicitudes
             adapter.activate();
+
+            // Esperar a que el servidor se apague
             communicator.waitForShutdown();
         }
     }
