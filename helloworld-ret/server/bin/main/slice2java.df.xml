@@ -1,13 +1,13 @@
 <state>
-  <timestamp value='1708575705708' />
+  <timestamp value='1727104429377' />
   <sourceSet name='default'>
-    <source name='/home/gtamura/own/cursos/swarch/resources/ICE/helloworld-ret/Printer.ice'>
-      <file name='/home/gtamura/own/cursos/swarch/resources/ICE/helloworld-ret/server/build/generated-src/Demo/Response.java' />
-      <file name='/home/gtamura/own/cursos/swarch/resources/ICE/helloworld-ret/server/build/generated-src/Demo/Printer.java' />
-      <file name='/home/gtamura/own/cursos/swarch/resources/ICE/helloworld-ret/server/build/generated-src/Demo/PrinterPrx.java' />
-      <file name='/home/gtamura/own/cursos/swarch/resources/ICE/helloworld-ret/server/build/generated-src/Demo/_PrinterPrxI.java' />
+    <source name='C:\Users\David\OneDrive\Escritorio\UNIVERSIDAD\6 semestre\Ingesfot 4\helloworld-ciclo-kbd-DavidDonneys-DavidHenao\helloworld-ciclo-kbd-DavidDonneys-DavidHenao\Printer.ice'>
+      <file name='C:\Users\David\OneDrive\Escritorio\UNIVERSIDAD\6 semestre\Ingesfot 4\helloworld-ciclo-kbd-DavidDonneys-DavidHenao\helloworld-ciclo-kbd-DavidDonneys-DavidHenao\server\build\generated-src\Demo\Response.java' />
+      <file name='C:\Users\David\OneDrive\Escritorio\UNIVERSIDAD\6 semestre\Ingesfot 4\helloworld-ciclo-kbd-DavidDonneys-DavidHenao\helloworld-ciclo-kbd-DavidDonneys-DavidHenao\server\build\generated-src\Demo\Printer.java' />
+      <file name='C:\Users\David\OneDrive\Escritorio\UNIVERSIDAD\6 semestre\Ingesfot 4\helloworld-ciclo-kbd-DavidDonneys-DavidHenao\helloworld-ciclo-kbd-DavidDonneys-DavidHenao\server\build\generated-src\Demo\PrinterPrx.java' />
+      <file name='C:\Users\David\OneDrive\Escritorio\UNIVERSIDAD\6 semestre\Ingesfot 4\helloworld-ciclo-kbd-DavidDonneys-DavidHenao\helloworld-ciclo-kbd-DavidDonneys-DavidHenao\server\build\generated-src\Demo\_PrinterPrxI.java' />
     </source>
-    <arg value='/opt/Ice-3.7.6/bin/slice2java' />
-    <arg value='-I/opt/Ice-3.7.6/slice' />
+    <arg value='C:\Program Files\ZeroC\Ice-3.7.10\\bin\slice2java.exe' />
+    <arg value='-IC:\Program Files\ZeroC\Ice-3.7.10\\slice' />
   </sourceSet>
 </state>

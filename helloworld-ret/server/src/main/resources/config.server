@@ -3,7 +3,7 @@
 # "Hello". The following line sets the endpoints for this
 # adapter.
 #
-Printer.Endpoints=tcp -h 192.168.194.108 -p 9099
+Printer.Endpoints=tcp -h 192.168.194.108 -p 9099 -h *
 #
 # Only listen on the ZeroTier's LIASOn1 interface by default.
 #
